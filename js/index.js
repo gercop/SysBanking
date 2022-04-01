@@ -1,8 +1,7 @@
-let chart;
-let categoryAxis;
-let series;
-let valueAxis;
 
+function requisitarBanking(){
+        console.log("Aqui vai a API Open Banking");    
+}
 
 
 
