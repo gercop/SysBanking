@@ -1,0 +1,32 @@
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none !important;
+}
+
+#formulario{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100% ;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-plan{
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+}
+
+.group-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-left: auto;    
+    width: 100%;
+}
+
+
