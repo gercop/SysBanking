@@ -19,9 +19,20 @@
                  <div class="input-content">
 
                     <h1> Time Alpha V1.0</h1>
-
-                    <button class="button" type="button" onClick="requisitarBanking()">
-                            Requisitar Open Banking
+                    <button class="button" type="button" onClick="requisitarBanking('https://bb-api.concore.io/open-banking/channels/v1/branches')">
+                            Requisitar Open Banking Branches
+                    </button>
+                    <br>
+                    <button class="button" type="button" onClick="requisitarBanking('https://bb-api.concore.io/open-banking/channels/v1/banking-agents')">
+                        Requisitar Open Banking Agents
+                    </button>
+                    <br>
+                    <button class="button" type="button" onClick="requisitarBanking('https://bb-api.concore.io/open-banking/products-services/v1/personal-accounts')">
+                        Requisitar Open Banking Personal Accounts
+                    </button>
+                    <br>                    
+                    <button class="button" type="button" onClick="requisitarBanking('https://itau-api.concore.io/open-banking/opendata-investments/v1/credit-fixed-incomes/data/loadingRate/prices')">
+                        Requisitar Open Banking Credit Fixed Incomes
                     </button>
 
                 </div>            
