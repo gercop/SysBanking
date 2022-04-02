@@ -8,14 +8,6 @@ function requisitarBanking( url ){
         request.open('GET', requestURL);        
         request.responseType = 'json';
 
-        /*request.withCredentials = true
-        request.setRequestHeader("Accept", "application/json");
-        request.setRequestHeader("Authorization", "string");
-        request.setRequestHeader("x-fapi-auth-date", "string");
-        request.setRequestHeader("x-fapi-customer-ip-address", "string");
-        request.setRequestHeader("x-fapi-interaction-id", "string");
-        request.setRequestHeader("x-customer-user-agent", "string"); */ 
-
         request.send(data);      
         request.onload = function() {                
                 data = request.response;
