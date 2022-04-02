@@ -1,9 +1,0 @@
-https://github.com/apiplaybook/open-banking-brasil
-
-https://openbankingbrasil.atlassian.net/wiki/spaces/OB/pages/47546407/Informa+es+T+cnicas+-+Investimentos+-+v1.0.0-rc1.0
-https://openbanking-brasil.github.io/areadesenvolvedor/?javascript#criar-novo-pedido-de-consentimento
-
-https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript/Objects/JSON
-
-https://mockapi.io/
-https://swagger.io/tools/swagger-codegen/

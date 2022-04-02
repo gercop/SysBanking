@@ -23,5 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 **/node_modules
+**/node_adicional
+**/softwares
 
 **/client/.vscode
