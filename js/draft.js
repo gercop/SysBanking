@@ -1,23 +1,3 @@
-function requisitarBanking( ){        
-        
-    debugger; 
-    var requestURL = 'https://bb-api.concore.io/open-banking/channels/v1/branches';
-    var request = new XMLHttpRequest();
-    request.open('GET', requestURL);  
-    request.responseType = 'json';
-    request.send();      
-    request.onload = function() {
-            debugger;
-            var superHeroes = request.response;
-            //var superHeroes = JSON.parse(superHeroesText); // convert it to an object
-            //populateHeader(superHeroes);                                
-            //showHeroes(superHeroes);
-            console.log(superHeroes);
-            
-    }
-}
-
-
 function exemploEstruturaDados () {
     let data = [
             {
@@ -45,7 +25,7 @@ function exemploEstruturaDados () {
     console.log(data);
 }
 
-function requisitarHero(){         
+function requisitar(){         
 
     debugger;
     var req = new XMLHttpRequest();        
@@ -72,7 +52,7 @@ function populateHeader(jsonObj) {
     header.appendChild(myPara);
 }
 
-function showHeroes(jsonObj) {
+function show(jsonObj) {
     debugger;
     var heroes = jsonObj['members'];
   
