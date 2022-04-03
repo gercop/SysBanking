@@ -1,24 +1,54 @@
 const milionario = 1000000.;
 var investiments = null;
 var nome, agencia, nroConta, digito; 
-    
-function requisitarDados(temNaAPIOpenBanking) {                
-        
-        if (temNaAPIOpenBanking) {
-                requisitarBanking(url);        
-        } else {
-                jsonHardCoded();
-        }
-        
-        nome     = investiments.data[0].civilName;
-        agencia  = investiments.data[0].accounts[0].accounts_list[0].branchCode;
-        nroConta = investiments.data[0].accounts[0].accounts_list[0].number;
-        digito   = investiments.data[0].accounts[0].accounts_list[0].checkDigit;
-        
-        document.getElementById("resultado").appendChild(criarTabelaId());
-        document.getElementById("resultado").appendChild(criarTabela(investiments));        
+
+function limparTela(){
+        document.location.reload(true);
 }
 
+/* A requisicação de dados é realizada através da API Open Banking, contudo
+algumas API necessárias para a presente proposta ainda não foram liberadas e
+neste caso foi criado um JSON Hardcoded conforme orientação do Mentor
+
+clientId -> campo personalId da estrutura JSON que deveria vir da interface
+            que  será incorporda no internet banking Safra 
+temNaAPIOpenBanking -> direciona a rotina pra o Open Banking ou para o JSON Hardcoded
+Data de Alteração: 02/04/2022 */
+function requisitarDados(clientId, tipo ,temNaAPIOpenBanking) {                                        
+        
+        $("form-resultado").prop('hidden',false);
+        if (temNaAPIOpenBanking) {
+                requisitarOpenBanking();        
+        } else {
+                jsonHardCoded();        
+                
+                id = getIndexClient(clientId, investiments);
+        
+                nome     = investiments.data[id].civilName;
+                agencia  = investiments.data[id].accounts[0].accounts_list[0].branchCode;
+                nroConta = investiments.data[id].accounts[0].accounts_list[0].number;
+                digito   = investiments.data[id].accounts[0].accounts_list[0].checkDigit;
+        
+                document.getElementById("resultado").style.visibility = "visible"; 
+                document.getElementById("resultado").appendChild(criarTabelaId());
+                document.getElementById("resultado").appendChild(criarTabela(tipo,id,investiments));        
+        }
+}
+
+/* Rotina para buscar o cliente na estrutura de dados JSON HardCoded devido a falta da API 
+   liberada no Open Banking 
+   clientId -> campo personalId da estrutura de dados JSON
+   data -> estrutura de investimentos
+   Data de Alteração: 03/04/2022     */
+function getIndexClient(clientId, data) {
+        
+        for (i=0; i < data.data.length; i++) 
+                if (data.data[i].personalId === clientId)
+                        return i;        
+        return 0;
+}
+
+/* Rotina pra criar uma span com msg de texto */
 function criarSpan(texto) {
 
         var legenda = document.createElement("span");
@@ -33,8 +63,7 @@ function parseDate(texto) {
       
         let dia = dataDigitadaSplit[0];
         let mes = dataDigitadaSplit[1];
-        let ano = dataDigitadaSplit[2];
-      
+        let ano = dataDigitadaSplit[2];      
       
         if (ano.length < 4 && parseInt(ano) < 50) {
           ano = "20" + ano;
@@ -47,8 +76,10 @@ function parseDate(texto) {
         return new Date(ano, mes, dia);
       }
 
+/* Criar  tabela com os dados do cliente */
 function criarTabelaId() {
-
+        
+        $("#tabela").remove();
         var tabelaId = document.createElement("table");        
         var theadId  = document.createElement("thead");
 
@@ -100,31 +131,64 @@ function criarTabelaId() {
         return tabelaId;
 }
 
-function criarTabela(conteudo) {        
+/* Criar a tabela com os dados a simulação.  */
+function criarTabela(tipo, id, investiments) {        
         
-        var saldoInicial = investiments.data[0].accounts[0].accounts_balances[0].availableAmount;
-        var interestRate1 = 0.61/100.; //Versão 4.0: Buscar API para obter tais informações
-        var interestRate2 = 0.81/100.; //Versão 4.0: Buscar API para obter tais informações
-        var depositosM1    = 400.;        
-        var depositosM2    = 800.;
+        var saldoInicial = investiments.data[id].accounts[0].accounts_balances[0].availableAmount;
+        var interestRateP = 0.61/100.; //Versão 4.0: Buscar API para obter tais informações
+        var interestRateR = 0.81/100.; //Versão 4.0: Buscar API para obter tais informações
+        var interestRateL = 0.9/100.;  //Versão 4.0: Buscar API para obter tais informações
+        var interestRateA = 0.85/100.;  //Versão 4.0: Buscar API para obter tais informações
+        var depositosM1   = 400.;        
+        var depositosM2   = 800.;
         
         var tabela = document.createElement("table");        
         var thead  = document.createElement("thead");
-        var tbody  = document.createElement("tbody");
+        var tbody  = document.createElement("tbody");                
         
-        thead.appendChild(addCabecalho("Mês/ano","Poupança (R$)","CDB/RDB (R$)","CDB/RDB (R$)","CDB/RDB (R$)",true,false));
-        thead.appendChild(addCabecalho("Aportes Regulares","-","-","R$ 400,00","R$ 800,00",false,true));        
+        if (tipo === 1) {
+                thead.appendChild(addCabecalho("Mês/ano","Poupança (R$)","CDB/RDB (R$)","CDB/RDB (R$)","Renda Passiva (R$)",true,false));
+                thead.appendChild(addCabecalho("Aportes Regulares","-","-","R$ 400,00","-",false,true));        
+        } else if (tipo === 2) {
+                thead.appendChild(addCabecalho("Mês/ano","Poupança (R$)","LCI (R$)","LCI (R$)","Renda Passiva (R$)",true,false));
+                thead.appendChild(addCabecalho("Aportes Regulares","-","-","R$ 400,00","-",false,true));        
+        } else if (tipo === 3) {
+                thead.appendChild(addCabecalho("Mês/ano","Poupança (R$)","LCA (R$)","LCA (R$)","Renda Passiva (R$)",true,false));
+                thead.appendChild(addCabecalho("Aportes Regulares","-","-","R$ 400,00","-",false,true));     
+        }       
         
-        var vlr = 0., saldoInicialAcumuladoP =0., saldoInicialAcumuladoR =0., saldoInicialAcumuladoD1 =0., saldoInicialAcumuladoD2 =0.;
-        var saldoInicialAcumuladoD2 = saldoInicialAcumuladoD1 = saldoInicialAcumuladoR = saldoInicialAcumuladoP = saldoInicial;        
+        var saldoInicialAcumuladoP  = 0., 
+            saldoInicialAcumuladoR1 = 0., 
+            saldoInicialAcumuladoR2 = 0., 
+            saldoInicialAcumuladoR3 = 0.,
+            saldoInicialAcumuladoL1 = 0., 
+            saldoInicialAcumuladoL2 = 0., 
+            saldoInicialAcumuladoL3 = 0., 
+            saldoInicialAcumuladoA1 = 0., 
+            saldoInicialAcumuladoA2 = 0., 
+            saldoInicialAcumuladoA3 = 0., 
+            vlr = 0.;
+        var saldoInicialAcumuladoP = saldoInicial;        
+        var saldoInicialAcumuladoR1 = saldoInicialAcumuladoR2 = saldoInicialAcumuladoR3 = saldoInicial;        
+        var saldoInicialAcumuladoL1 = saldoInicialAcumuladoL2 = saldoInicialAcumuladoL3 = saldoInicial;        
+        var saldoInicialAcumuladoA1 = saldoInicialAcumuladoA2 = saldoInicialAcumuladoA3 = saldoInicial;        
         var finalizarProjecao = false;
 
         for (var i=1; i<=35*12 && !finalizarProjecao; i++) {                
                 
-                saldoInicialAcumuladoP  = (1.+interestRate1)*saldoInicialAcumuladoP;
-                saldoInicialAcumuladoR  = (1.+interestRate2)*saldoInicialAcumuladoR;
-                saldoInicialAcumuladoD1 = depositosM1+(1.+interestRate2)*saldoInicialAcumuladoD1;
-                saldoInicialAcumuladoD2 = depositosM2+(1.+interestRate2)*saldoInicialAcumuladoD2;                
+                saldoInicialAcumuladoP  = (1.+interestRateP)*saldoInicialAcumuladoP;
+
+                saldoInicialAcumuladoR1 = (1.+interestRateR)*saldoInicialAcumuladoR1;
+                saldoInicialAcumuladoR2 = depositosM1+(1.+interestRateR)*saldoInicialAcumuladoR2;
+                saldoInicialAcumuladoR3 = depositosM2+(1.+interestRateR)*saldoInicialAcumuladoR3;                
+
+                saldoInicialAcumuladoL1 = (1.+interestRateL)*saldoInicialAcumuladoL1;                
+                saldoInicialAcumuladoL2 = depositosM1+(1.+interestRateL)*saldoInicialAcumuladoL2;
+                saldoInicialAcumuladoL3 = depositosM2+(1.+interestRateL)*saldoInicialAcumuladoL3;                
+
+                saldoInicialAcumuladoA1 = (1.+interestRateA)*saldoInicialAcumuladoA1;                
+                saldoInicialAcumuladoA2 = depositosM1+(1.+interestRateA)*saldoInicialAcumuladoA2;
+                saldoInicialAcumuladoA3 = depositosM2+(1.+interestRateA)*saldoInicialAcumuladoA3;                                
                 
                 if ( mostraMesAno( (i) ) ) {                        
                         
@@ -135,39 +199,25 @@ function criarTabela(conteudo) {
                         var texto = document.createTextNode( dataFormatadaMesAno(dtNext) + str_aux  );
                         t.appendChild(texto);
                         tr.appendChild(t);
-                
+
                         vlr = saldoInicialAcumuladoP.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
                         var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoP) ) );                        
                         var texto = document.createTextNode( vlr );
                         t.appendChild(texto);
-                        tr.appendChild(t);
-
-                        vlr = saldoInicialAcumuladoR.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-                        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoR) ) );
-                        var texto = document.createTextNode( vlr );
-                        t.appendChild(texto);
                         tr.appendChild(t);                        
 
-                        vlr = saldoInicialAcumuladoD1.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-                        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoD1) ) );
-                        var texto = document.createTextNode( vlr );
-                        t.appendChild(texto);
-                        tr.appendChild(t);
-
-                        vlr = saldoInicialAcumuladoD2.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-                        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoD2) ) );
-                        var texto = document.createTextNode( vlr );                        
-                        t.appendChild(texto);                              
-                        tr.appendChild(t);
-                        if ( seTornouMilionario(saldoInicialAcumuladoD2) ) {
-                                tr.style.backgroundColor = "#add";
-                                tr.style.border = "2px solid blue"
-                                tr.style.height = "30px"                                
+                        if (tipo === 1) {                                
+                                tr = mostraPoupancaVersusCDB_RDB(tr,saldoInicialAcumuladoR1,saldoInicialAcumuladoR2,interestRateR);
+                                finalizarProjecao = seTornouMilionarioT(saldoInicialAcumuladoP,saldoInicialAcumuladoR1,saldoInicialAcumuladoR2);
+                        } else if (tipo === 2) {
+                                tr = mostraPoupancaVersusLCI(tr,saldoInicialAcumuladoR1,saldoInicialAcumuladoR2,interestRateR);
+                                finalizarProjecao = seTornouMilionarioT(saldoInicialAcumuladoP,saldoInicialAcumuladoL1,saldoInicialAcumuladoL2);                                                                                
+                        } else if (tipo === 3) {
+                                tr = mostraPoupancaVersusLCA(tr, saldoInicialAcumuladoA1, saldoInicialAcumuladoA2, interestRateA); 
+                                finalizarProjecao = seTornouMilionarioT(saldoInicialAcumuladoP,saldoInicialAcumuladoA1,saldoInicialAcumuladoA2);                                                                                
                         }
 
-                        (i==1) ? thead.appendChild(tr):tbody.appendChild(tr);
-
-                        finalizarProjecao = seTornouMilionarioT(saldoInicialAcumuladoD2,saldoInicialAcumuladoD1,saldoInicialAcumuladoR,saldoInicialAcumuladoP);                                                                                
+                        (i==1) ? thead.appendChild(tr):tbody.appendChild(tr);                        
                 }
         }
         
@@ -176,6 +226,97 @@ function criarTabela(conteudo) {
 
         return tabela;
 }
+
+function mostraPoupancaVersusLCI(tr, saldoInicialAcumuladoR1, saldoInicialAcumuladoR2, interestRateR) {
+
+        var vlr = saldoInicialAcumuladoR1.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoR1) ) );
+        var texto = document.createTextNode( vlr );
+        t.appendChild(texto);
+        tr.appendChild(t);                        
+                                
+        var vlr = saldoInicialAcumuladoR2.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoR2) ) );
+        var texto = document.createTextNode( vlr );
+        t.appendChild(texto);
+        tr.appendChild(t);
+
+        var rendaPassiva = saldoInicialAcumuladoR2*interestRateR;
+        var vlr = rendaPassiva.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(rendaPassiva) ) );
+        var texto = document.createTextNode( vlr );
+        t.appendChild(texto);
+        tr.appendChild(t);
+
+        if ( seTornouMilionario(saldoInicialAcumuladoR2) ) {
+                tr.style.backgroundColor = "#add";
+                tr.style.border = "2px solid blue"
+                tr.style.height = "30px"                                
+        }
+        return tr;                                
+}                  
+
+function mostraPoupancaVersusCDB_RDB(tr, saldoInicialAcumuladoL1, saldoInicialAcumuladoL2, interestRateL) {
+
+        var vlr = saldoInicialAcumuladoL1.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoL1) ) );
+        var texto = document.createTextNode( vlr );                        
+        t.appendChild(texto);                              
+        tr.appendChild(t);
+
+        var vlr = saldoInicialAcumuladoL2.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoL2) ) );
+        var texto = document.createTextNode( vlr );                        
+        t.appendChild(texto);                              
+        tr.appendChild(t);
+
+        rendaPassiva = saldoInicialAcumuladoL2*interestRateL;
+        var vlr = rendaPassiva.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(rendaPassiva) ) );
+        var texto = document.createTextNode( vlr );                        
+        t.appendChild(texto);                              
+        tr.appendChild(t);
+
+        if ( seTornouMilionario(saldoInicialAcumuladoL2) ) {
+                tr.style.backgroundColor = "#add";
+                tr.style.border = "2px solid blue"
+                tr.style.height = "30px"                                
+        }
+
+        return tr;
+}
+
+function mostraPoupancaVersusLCA(tr, saldoInicialAcumuladoA1, saldoInicialAcumuladoA2, interestRateA) {
+
+        var vlr = saldoInicialAcumuladoA1.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoA1) ) );
+        var texto = document.createTextNode( vlr );                        
+        t.appendChild(texto);                              
+        tr.appendChild(t);
+
+        var vlr = saldoInicialAcumuladoA2.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(saldoInicialAcumuladoA2) ) );
+        var texto = document.createTextNode( vlr );                        
+        t.appendChild(texto);                              
+        tr.appendChild(t);
+
+        var rendaPassiva = saldoInicialAcumuladoA2*interestRateA;
+        var vlr = rendaPassiva.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        var t = document.createElement( thd( !seTornouMilionario(rendaPassiva) ) );
+        var texto = document.createTextNode( vlr );                        
+        t.appendChild(texto);                              
+        tr.appendChild(t);
+
+        if ( seTornouMilionario(saldoInicialAcumuladoA2) ) {
+                tr.style.backgroundColor = "#add";
+                tr.style.border = "2px solid blue"
+                tr.style.height = "30px"                                
+        }
+        return tr;
+}
+
+
+
 
 function pularEspacoComTexto(str1,str2,str3,str4) {
         var tr = document.createElement("tr");                                                
@@ -208,13 +349,11 @@ function seTornouMilionario(vlr) {
         return (vlr > milionario);
 }
 
-function seTornouMilionarioT(vlr1,vlr2,vlr3,vlr4) {
+function seTornouMilionarioT(vlr1,vlr2,vlr3) {
         return    (vlr1 > milionario) 
                || (vlr2 > milionario) 
-               || (vlr3 > milionario) 
-               || (vlr4 > milionario);
+               || (vlr3 > milionario);
 }
-
 
 function mostraMesAno(i) {
         return (  ( (i > 0) && (i <= 12) ) 
@@ -240,8 +379,7 @@ function addCabecalho(col1, col2, col3, col4, col5, bordaSuperior, bordaInferior
         if (bordaSuperior)
                 tr.style.borderTop = "1px solid";   
         if (bordaInferior)
-                tr.style.borderBottom = "1px solid";        
-             
+                tr.style.borderBottom = "1px solid";      
                 
         var t = document.createElement( thd(0) );
         var texto = document.createTextNode( col2 );
@@ -262,7 +400,7 @@ function addCabecalho(col1, col2, col3, col4, col5, bordaSuperior, bordaInferior
         var texto = document.createTextNode( col5 );
         t.appendChild(texto);
         tr.appendChild(t);
-
+        
         return tr;        
 }
 
@@ -277,7 +415,6 @@ function somaMes(data, qtdeMeses) {
         return dtNext;
 }
 
-
 function dataFormatadaMesAno(data){        
         mes  = (data.getMonth()+1).toString(); //+1 pois no getMonth Janeiro começa com zero.
         mesF = (mes.length == 1) ? '0'+mes : mes;
@@ -285,19 +422,21 @@ function dataFormatadaMesAno(data){
         return mesF+"/"+anoF;
 }
 
-function requisitarOpenBanking(url){                
-
-        var data = null;                
-        var requestURL = url;
+function requisitarOpenBanking(){                                
+        
+        var data = null;
         var request = new XMLHttpRequest();        
-        request.open('GET', requestURL);        
-        request.responseType = 'json';
-
+        request.open('GET', "https://bb-api.concore.io/open-banking/channels/v1/branches");        
+        request.responseType = 'json';        
         request.send(data);      
-        request.onload = function() {                
+        request.onload = function() {                   
+                var dialogId = document.createElement("dialog");                                             
+                document.getElementById("resultado").appendChild(dialogId);
+                var data = request.response; 
+                console.log(data);
                 debugger;
-                data = request.response;
-                console.log(data);                   
+                alert("Foi carregada a API do " + data.data.brand.name + ", CNPJ: " + data.data.brand.companies[0].cnpjNumber);              
+                
         }                
 }
 

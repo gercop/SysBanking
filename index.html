@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="60">
     <link type="text/css" rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -11,6 +12,10 @@
     <script src="https://kit.fontawesome.com/18a72a0e68.js" crossorigin="anonymous"></script>            
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <title>Inteligent Open Banking</title>
+
+    <script src="js/index.js"></script>
+    <script src="js/prospect.js"></script>
+
 </head>
 
 <body>
@@ -18,34 +23,34 @@
         <div class="register-container">  
             <div class="input-content">
                 <h1 class="register-title"> Time Alpha V3.0</h1>
-                <button class="btn btn-primary button" type="button" onClick="requisitarBanking('https://bb-api.concore.io/open-banking/channels/v1/branches')">
+                <button class="btn btn-primary button" type="button" onClick="requisitarDados('000',0,true)">
                     Requisitar Open Banking Branches
                 </button>
-                <br> <br>                    
-                <button class="btn btn-primary button" type="button" onClick="requisitarOpenBanking('https://bb-api.concore.io/open-banking/channels/v1/banking-agents')">
-                    Requisitar Open Banking Agents
-                </button>
-                <br> <br>
-                <button class="btn btn-primary button" type="button" onClick="requisitarOpenBanking('https://bb-api.concore.io/open-banking/products-services/v1/personal-accounts')">
-                    Requisitar Open Banking Personal Accounts 
-                </button>
-                <br> <br>               
-                <button class="btn btn-primary button" type="button" onClick="requisitarOpenBanking('https://itau-api.concore.io/open-banking/opendata-investments/v1/credit-fixed-incomes/data/loadingRate/prices')">
-                    Requisitar Open Banking Credit Fixed Incomes
-                </button>
                 <br> <br> 
-                <button class="btn btn-primary button" type="button" onClick="requisirProspect(false)">
+                <button class="btn btn-primary button" type="button" onClick="requisitarDadosPro()">
                     Safra Prospect 
                 </button>
                 <br> <br> 
-                <button class="btn btn-primary button" type="button" onClick="requisitarDados(false)">
-                    Safra Internet Banking
+                <button class="btn btn-primary button" type="button" onClick="requisitarDados('578-psd-71md6971kjh-2d414',1,false)">
+                    Safra Internet Banking Poupança e CDB/RDB
                 </button>
+                <br> <br> 
+                <button class="btn btn-primary button" type="button" onClick="requisitarDados('578-psd-71md6971kjh-2d414',2,false)">
+                    Safra Internet Banking Poupança e LCI
+                </button>
+                <br> <br> 
+                <button class="btn btn-primary button" type="button" onClick="requisitarDados('578-psd-71md6971kjh-2d414',3,false)">
+                    Safra Internet Banking Poupança e LCA
+                </button>                
+                <br> <br> 
+                <button class="btn btn-primary button" type="button" onClick="limparTela()">
+                    Limpar Resultados
+                </button>                
             </div>    
         </div>    
     </div> 
 
-    <div id="form-resultado" class="container">
+    <div class="result-container" >        
         <div id="resultado" class="register-container">  
 
         </div>
@@ -53,8 +58,6 @@
     
 </body>
 
-<script src="js/index.js"></script>
-<script src="js/prospect.js"></script>
 
 
 </html>
