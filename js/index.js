@@ -435,8 +435,7 @@ function requisitarOpenBanking(){
                 var data = request.response; 
                 console.log(data);
                 debugger;
-                alert("Foi carregada a API do " + data.data.brand.name + ", CNPJ: " + data.data.brand.companies[0].cnpjNumber);              
-                
+                alert("Foi carregada a API do " + data.data.brand.name + ", CNPJ: " + data.data.brand.companies[0].cnpjNumber);    
         }                
 }
 
