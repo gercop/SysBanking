@@ -8,9 +8,10 @@ um alerta com os dados coletados do JSON obtido pela API:
 https://bb-api.concore.io/open-banking/channels/v1/branches
 
 Como os dados usados no presente projeto ainda não estavam implementados
-não foi possível usar esse recurso por requisição GET através da API. Para
-os dois sistemas propostos os dados utilizados, no formato JSON, foram
-do tipo hardcoded.
+não foi possível usar esse recurso por requisição GET através da API, pois 
+os dados necessários para o presente projeto não estavm contidos nas APIs
+liberadas a fase 1. Para os dois sistemas propostos os dados utilizados, 
+no formato JSON, foram do tipo hardcoded.
 
 2) Safra Prospect é um módulo do sistema que usaria as APIs para coletados
 dados dos clientes internos e externos ao Safra e assim, permitir que uma 
@@ -29,5 +30,5 @@ e o aplicativo mostra quanto tempo leva para o cliente se tornar milionário.
 6) Este botão apenas limpa a tela.
 
 Obs.: Vale ressaltar que o Menu com o nome do time e a última versão desenvolvida foi
-colocado apenas para facilitar a avaliação do desenvolvedores e não faz parte do 
-sistema.
+colocado apenas para facilitar a avaliação dos desenvolvedores e não faz parte do 
+sistema, apenas dispara cada módulo.
