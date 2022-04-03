@@ -87,3 +87,31 @@ function show(jsonObj) {
 }
 
 
+var tabela = document.createElement("table");        
+var thead  = document.createElement("thead");
+var tbody  = document.createElement("tbody");
+
+var thd = function( i ) {
+        return (i==0) ? "th" : "td";
+};
+
+for (var i=0; i<conteudo.length; i++) {
+        var tr = document.createElement("tr");
+        
+        for (var j=0; j<conteudo[i].length; j++) {
+                var t = document.createElement( thd(i) );
+                var texto = document.createTextNode( conteudo[i][j] );
+                t.appendChild(texto);
+                tr.appendChild(t);
+        }
+
+        (i==0) ? thead.appendChild(tr):tbody.appendChild(tr);
+}
+
+tabela.appendChild(thead);
+tabela.appendChild(tbody);
+
+return tabela;
+
+
+

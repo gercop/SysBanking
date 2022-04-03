@@ -469,47 +469,8 @@ function criarTabela(conteudo) {
 
         debugger;
         var saldoInicial = investiments.data[0].accounts[0].accounts_balances[0].availableAmount;
-        var interestRate = 0.5;
-        var dtHoje = Date();        
-
-        console.log(dataFormatadaMesAno(dtHoje));
-
-
-  var dataDigitada = '02/04/2022';
-  
-  var currentDate = parseDate(dataDigitada);
-  var currentDate1 = new Date();
-
-  //Capturar Quantidade de meses
-  var meses = "1";
-  //Parse Int dos meses
-  var a = parseInt(meses);
-
-  //Adicionar meses 
-  currentDate.setMonth(currentDate.getMonth() + a);
-
-  //Trazer data Atual
-  currentDate1.setDate(currentDate1.getDate());
-
-
-  //Exibir data Atual
-  console.log(currentDate1.toLocaleDateString());
-  console.log(dataFormatada(currentDate1));
-
-  //Exibir a data ja atualizada
-  console.log(currentDate.toLocaleDateString());
-  console.log(dataFormatada(currentDate));
-
-        var dtHoje2 = Date();
-        var dia = 1;
-        var mes = dtHoje2.getMonth();
-        var ano = dtHoje2.getFullYear();
-        let dtNext = Date( ano, mes, dia);
-        console.log(dtNext);
-
-        
-        console.log(dataFormatadaMesAno(dtHoje));
-        
+        var interestRate = 0.5/100.;
+        var dtHoje = Date();             
 
         var tabela = document.createElement("table");        
         var thead  = document.createElement("thead");
@@ -517,19 +478,39 @@ function criarTabela(conteudo) {
 
         var thd = function( i ) {
                 return (i==0) ? "th" : "td";
-        };
-
-        for (var i=0; i<conteudo.length; i++) {
-                var tr = document.createElement("tr");
+        };        
+        
+        var tr = document.createElement("tr");                
+        var t = document.createElement( thd(0) );
+        var texto = document.createTextNode( 'Data Mês/Ano' );
+        t.appendChild(texto);
+        tr.appendChild(t);
                 
-                for (var j=0; j<conteudo[i].length; j++) {
-                        var t = document.createElement( thd(i) );
-                        var texto = document.createTextNode( conteudo[i][j] );
-                        t.appendChild(texto);
-                        tr.appendChild(t);
-                }
+        var t = document.createElement( thd(0) );
+        var texto = document.createTextNode( 'Rentabilização (R$)' );
+        t.appendChild(texto);
+        tr.appendChild(t);
 
-                (i==0) ? thead.appendChild(tr):tbody.appendChild(tr);
+        thead.appendChild(tr);
+        
+        for (var i=1; i<=12; i++) {
+                var tr = document.createElement("tr");                
+        
+                var dtNext = somaMes(i);              
+                var saldoInicial = (1.+interestRate)*saldoInicial;
+                
+                var t = document.createElement( thd(1) );
+                var texto = document.createTextNode( dataFormatadaMesAno(dtNext) );
+                t.appendChild(texto);
+                tr.appendChild(t);
+                
+                var moeda = saldoInicial.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+                var t = document.createElement( thd(1) );
+                var texto = document.createTextNode( moeda );
+                t.appendChild(texto);
+                tr.appendChild(t);
+
+                (i==1) ? thead.appendChild(tr):tbody.appendChild(tr);
         }
 
         tabela.appendChild(thead);
@@ -538,13 +519,22 @@ function criarTabela(conteudo) {
         return tabela;
 }
 
-function dataFormatada(data){
-        data = new Date(),
-            dia  = data.getDate().toString(),
-            diaF = (dia.length == 1) ? '0'+dia : dia,
-            mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
-            mesF = (mes.length == 1) ? '0'+mes : mes,
-            anoF = data.getFullYear();
+function somaMes(qtdeMeses) {
+
+        var dtHoje = new Date();
+        var dia = 1;
+        var mes = dtHoje.getMonth() + qtdeMeses;
+        var ano = dtHoje.getFullYear();
+        var dtNext = new Date( ano, mes, dia);
+        console.log(dtNext);
+        return dtNext;
+}
+
+
+function dataFormatadaMesAno(data){        
+        mes  = (data.getMonth()+1).toString(); //+1 pois no getMonth Janeiro começa com zero.
+        mesF = (mes.length == 1) ? '0'+mes : mes;
+        anoF = data.getFullYear();
         return mesF+"/"+anoF;
 }
 
